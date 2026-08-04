@@ -1,0 +1,215 @@
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
+import { Context } from "../../main";
+
+const Application = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [coverLetter, setCoverLetter] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [experienceYears, setExperienceYears] = useState("");
+  const [experienceMonths, setExperienceMonths] = useState("");
+  const [resume, setResume] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fileError, setFileError] = useState("");
+
+  const { isAuthorized, user } = useContext(Context);
+  const navigateTo = useNavigate();
+  const { id } = useParams();
+
+  // Function to handle file input changes with validation
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setFileError("");
+    
+    if (!file) {
+      setResume(null);
+      return;
+    }
+    
+    // Check file type
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      setFileError("Please select a valid resume file (PDF, DOC, or DOCX)");
+      setResume(null);
+      return;
+    }
+    
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setFileError("File size should be less than 5MB");
+      setResume(null);
+      return;
+    }
+    
+    setResume(file);
+  };
+
+  const handleApplication = async (e) => {
+    e.preventDefault();
+    
+    // Validate form
+    if (!name || !email || !phone || !address || !coverLetter || !experienceYears || !experienceMonths) {
+      toast.error("Please fill in all fields including your experience details");
+      return;
+    }
+    
+    if (!resume) {
+      setFileError("Please upload your resume");
+      return;
+    }
+    
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("address", address);
+    formData.append("experienceYears", experienceYears);
+    formData.append("experienceMonths", experienceMonths);
+    formData.append("coverLetter", coverLetter);
+    formData.append("resume", resume);
+    formData.append("jobId", id);
+
+    try {
+      const { data } = await axios.post(
+        "http://localhost:4000/api/v1/application/post",
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setName("");
+      setEmail("");
+      setCoverLetter("");
+      setPhone("");
+      setAddress("");
+      setExperienceYears("");
+      setExperienceMonths("");
+      setResume(null);
+      toast.success(data.message);
+      navigateTo("/job/getall");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 
+        "Something went wrong. Please try again later.";
+      toast.error(errorMessage);
+      
+      // Show specific message for Cloudinary errors
+      if (errorMessage.includes("Cloudinary") || errorMessage.includes("api_key")) {
+        toast.error("File upload service is currently unavailable. Please try again later.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isAuthorized || (user && user.role === "Employer")) {
+    return <Navigate to="/login" />;
+  }
+
+  return (
+    <section className="application">
+      <div className="container">
+        <h3>Application Form</h3>
+        <form onSubmit={handleApplication}>
+          <input
+            type="text"
+            placeholder="Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <input
+            type="email"
+            placeholder="Your Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            placeholder="Your Phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Your Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+          />
+          <div className="wrapper">
+            <input
+              type="number"
+              min="0"
+              placeholder="Experience Years"
+              value={experienceYears}
+              onChange={(e) => setExperienceYears(e.target.value)}
+              required
+            />
+            <input
+              type="number"
+              min="0"
+              max="11"
+              placeholder="Experience Months"
+              value={experienceMonths}
+              onChange={(e) => setExperienceMonths(e.target.value)}
+              required
+            />
+          </div>
+          <textarea
+            placeholder="Cover Letter..."
+            value={coverLetter}
+            onChange={(e) => setCoverLetter(e.target.value)}
+            required
+          />
+          <div>
+            <label
+              style={{ textAlign: "start", display: "block", fontSize: "20px" }}
+            >
+              Upload Resume 
+              <p style={{ color: "red", fontSize: "12px", margin: "5px 0 0 0" }}>
+                (Supported formats: PDF, DOC, DOCX. Max size: 5MB)
+              </p>
+            </label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileChange}
+              style={{ width: "100%" }}
+            />
+            {fileError && (
+              <p style={{ color: "red", fontSize: "14px", marginTop: "5px" }}>
+                {fileError}
+              </p>
+            )}
+          </div>
+          <button 
+            type="submit" 
+            disabled={loading}
+            style={{ 
+              opacity: loading ? 0.7 : 1,
+              cursor: loading ? "not-allowed" : "pointer" 
+            }}
+          >
+            {loading ? "Submitting..." : "Send Application"}
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+};
+
+export default Application;
