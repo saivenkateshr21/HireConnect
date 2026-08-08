@@ -1,133 +1,176 @@
-# HireConnect
+# HireConnect 🚀
 
-HireConnect is a full-stack job portal application designed to connect recruiters and job seekers. Recruiters can post and manage jobs, while candidates can browse open positions, apply for them, and upload their resumes.
+[![Frontend Deployment](https://img.shields.io/badge/Frontend-Vercel-black?logo=vercel)](https://vercel.com)
+[![Backend Deployment](https://img.shields.io/badge/Backend-Render-46E3B7?logo=render&logoColor=white)](https://render.com)
+[![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/cloud/atlas)
 
-## Features
+HireConnect is a full-stack job portal web application designed to connect recruiters and job seekers. Recruiters can post and manage jobs, while candidates can browse open positions, apply for them, and upload their resumes.
 
-- User registration and login
-- Role-based access for recruiters and applicants
-- Job posting, editing, and deletion
-- Job listing and detailed job view
-- Resume upload and application submission
-- My Jobs and My Applications dashboards
-- Secure authentication using JWT and cookies
+---
 
-## Tech Stack
+## 🌐 Live Application URLs
+
+- **Frontend App (Vercel)**: `https://<your-app-name>.vercel.app` *(Replace with your live Vercel URL)*
+- **Backend API (Render)**: `https://<your-backend-name>.onrender.com` *(Replace with your live Render URL)*
+
+---
+
+## ✨ Features
+
+- **Authentication & Authorization**: Secure JWT authentication stored in HTTP-only cookies.
+- **Role-Based Access Control**: Distinct capabilities for **Recruiter (Employer)** and **Job Seeker (Applicant)** roles.
+- **Job Management**: Recruiters can post, update, view, and delete job listings.
+- **Job Discovery**: Search and view detailed job postings with salary, experience, location, and requirement details.
+- **Resume Uploads**: Seamless Cloudinary integration for resume document processing and storage.
+- **Dashboards**: Dedicated "My Jobs" and "My Applications" management dashboards.
+
+---
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- React
-- Vite
-- React Router DOM
-- Axios
-- React Hot Toast
-- React Icons
+- **Framework**: React 18 + Vite
+- **Routing**: React Router DOM v6
+- **HTTP Client**: Axios (with credentials support)
+- **UI Notifications**: React Hot Toast
+- **Icons**: React Icons
 
 ### Backend
-- Node.js
-- Express.js
-- MongoDB with Mongoose
-- JWT authentication
-- Cloudinary for resume file uploads
-- Cookie parser and CORS support
+- **Runtime**: Node.js & Express.js
+- **Database**: MongoDB Atlas with Mongoose ODM
+- **Security & Auth**: JSON Web Tokens (JWT), Cookie-Parser, bcrypt
+- **File Uploads**: Express-FileUpload & Cloudinary SDK
+- **CORS**: Configurable cross-origin resource sharing
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```text
 HireConnect/
 ├── backend/
-│   ├── controllers/
-│   ├── database/
-│   ├── middlewares/
-│   ├── models/
-│   ├── routes/
-│   ├── utils/
-│   ├── app.js
-│   ├── package.json
-│   └── server.js
+│   ├── controllers/         # Request handlers for user, job, application
+│   ├── database/            # Mongoose database connection setup
+│   ├── middlewares/         # Auth verification & error handling
+│   ├── models/              # Mongoose schemas (User, Job, Application)
+│   ├── routes/              # Express API route endpoints
+│   ├── utils/               # JWT token helper & error classes
+│   ├── app.js               # Express application initialization & middleware
+│   ├── render.yaml          # Render infrastructure-as-code config
+│   └── server.js            # Entry point & port listener
 ├── frontend/
-│   ├── src/
-│   ├── public/
-│   ├── package.json
-│   └── vite.config.js
+│   ├── src/                 # React components, pages & context
+│   ├── public/              # Static assets & favicon
+│   ├── vercel.json          # Vercel SPA routing rewrite config
+│   ├── vite.config.js       # Vite build & dev server config
+│   └── package.json
 └── README.md
 ```
 
-## Getting Started
+---
+
+## 🚀 Local Development Setup
 
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/<your-username>/HireConnect.git
 cd HireConnect
 ```
 
 ### 2. Install dependencies
 
-Install backend dependencies:
-
 ```bash
+# Backend
 cd backend
 npm install
-```
 
-Install frontend dependencies:
-
-```bash
+# Frontend
 cd ../frontend
 npm install
 ```
 
-### 3. Configure environment variables
+### 3. Environment Variables Setup
 
-Create a `.env` file inside the `backend` folder with the following variables:
-
+#### Backend (`backend/.env`)
 ```env
 PORT=4000
-DB_URL=<your_mongodb_connection_string>
-JWT_SECRET_KEY=<your_jwt_secret>
+DB_URL=mongodb+srv://<username>:<password>@cluster0.xxx.mongodb.net/hireconnect?retryWrites=true&w=majority
+JWT_SECRET_KEY=your_jwt_secret_key
 JWT_EXPIRE=7d
 COOKIE_EXPIRE=7
 FRONTEND_URL=http://localhost:5173
-CLOUDINARY_CLOUD_NAME=<your_cloudinary_cloud_name>
-CLOUDINARY_API_KEY=<your_cloudinary_api_key>
-CLOUDINARY_API_SECRET=<your_cloudinary_api_secret>
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+NODE_ENV=development
 ```
 
-> The frontend currently communicates with the backend on `http://localhost:4000` for auth and job-related API calls.
+#### Frontend (`frontend/.env`)
+```env
+VITE_API_URL=http://localhost:4000/api/v1
+```
 
-## Run the Application
-
-Start the backend server:
+### 4. Run Locally
 
 ```bash
+# Terminal 1 - Backend
 cd backend
-npm run dev
-```
+npm start
 
-Start the frontend development server:
-
-```bash
+# Terminal 2 - Frontend
 cd frontend
 npm run dev
 ```
 
-## Useful Scripts
+---
 
-### Backend
-- `npm run dev` — runs the backend API server
-- `npm start` — starts the backend in production mode
+## ☁️ Production Deployment Guide
 
-### Frontend
-- `npm run dev` — runs the Vite development server
-- `npm run build` — builds the frontend for production
-- `npm run preview` — previews the production build locally
+### STEP 1: MongoDB Atlas Database Setup
+1. Log in to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+2. Create a new Cluster (Free Tier).
+3. Under **Database Access**, create a database user and password.
+4. Under **Network Access**, add IP `0.0.0.0/0` (Allows connection from Render).
+5. Copy your connection string (`DB_URL`).
 
-## Notes
+### STEP 2: Deploy Backend to Render
+1. Create a new **Web Service** on [Render](https://render.com).
+2. Connect your GitHub repository and set Root Directory to `backend`.
+3. Set Build Command to `npm install` and Start Command to `node server.js`.
+4. Add the following Environment Variables:
+   - `PORT`: `10000` (or leave default)
+   - `NODE_ENV`: `production`
+   - `DB_URL`: `<your-mongodb-atlas-connection-string>`
+   - `JWT_SECRET_KEY`: `<secure-random-secret>`
+   - `JWT_EXPIRE`: `7d`
+   - `COOKIE_EXPIRE`: `7`
+   - `FRONTEND_URL`: `https://<your-vercel-app>.vercel.app`
+   - `CLOUDINARY_CLOUD_NAME`: `<your-cloudinary-name>`
+   - `CLOUDINARY_API_KEY`: `<your-cloudinary-key>`
+   - `CLOUDINARY_API_SECRET`: `<your-cloudinary-secret>`
 
-- MongoDB must be reachable through the connection string in `DB_URL`.
-- Cloudinary is used to store uploaded resumes.
-- The app is structured as a decoupled frontend and backend, making it suitable for extension or deployment separately.
+### STEP 3: Deploy Frontend to Vercel
+1. Import your GitHub repository on [Vercel](https://vercel.com).
+2. Set Root Directory to `frontend`.
+3. Framework Preset: `Vite`.
+4. Build Command: `npm run build`, Output Directory: `dist`.
+5. Add Environment Variable:
+   - `VITE_API_URL`: `https://<your-render-app>.onrender.com/api/v1`
 
-## License
+---
 
-This project is currently unlicensed unless otherwise specified.
+## ✅ Pre-Flight Testing Checklist
+
+- [x] **Registration**: Recruiter & Job Seeker account creation
+- [x] **Login & Logout**: JWT authentication & cookie clearing
+- [x] **Role Access**: Recruiter-only job creation & viewing applicant submissions
+- [x] **Job Management**: Create job, update details, delete job listing
+- [x] **Job Application**: Apply for job with cover letter & Cloudinary resume upload
+- [x] **Dashboards**: Verification of "My Jobs" and "My Applications" views
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.

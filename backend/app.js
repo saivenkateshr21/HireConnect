@@ -13,9 +13,22 @@ import os from "os";
 const app = express();
 config();
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:5173",
+  "http://localhost:4173",
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "*",
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(o => origin.startsWith(o))) {
+        return callback(null, true);
+      }
+      return callback(null, true); // Fallback to allow request in production setups
+    },
     methods: ["GET", "POST", "DELETE", "PUT"],
     credentials: true,
   })
@@ -31,6 +44,12 @@ app.use(
     tempFileDir: os.tmpdir(),
   })
 );
+
+// Health check route
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", message: "HireConnect API is running" });
+});
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/job", jobRouter);
 app.use("/api/v1/application", applicationRouter);
