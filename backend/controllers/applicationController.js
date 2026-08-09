@@ -30,7 +30,10 @@ export const postApplication = catchAsyncErrors(async (req, res, next) => {
   
   try {
     const cloudinaryResponse = await cloudinary.uploader.upload(
-      resume.tempFilePath
+      resume.tempFilePath,
+      {
+        resource_type: "raw",
+      }
     );
 
     if (!cloudinaryResponse || cloudinaryResponse.error) {

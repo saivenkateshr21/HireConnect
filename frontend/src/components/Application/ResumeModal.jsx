@@ -29,8 +29,9 @@ const ResumeModal = ({ imageUrl, onClose }) => {
           />
         ) : (
           <div className="resume-file-card">
-            <p>Resume document is available for download.</p>
-            <a href={imageUrl} target="_blank" rel="noreferrer">
+            <p>Unable to preview this resume directly.</p>
+            {/* Resume document is available for download. */}
+            <a href={imageUrl} target="_blank" rel="noopener noreferrer">
               Open Resume
             </a>
           </div>

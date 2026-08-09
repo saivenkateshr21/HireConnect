@@ -1394,37 +1394,67 @@ nav .hamburger {
 }
 .resume-modal {
   width: 100%;
+  height: 100vh;
   display: flex;
-  background: #00000085;
-  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
 }
 .resume-modal .modal-content {
-  width: 100%;
-  height: 100%;
+  width: 90%;
+  height: 90%;
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 }
+
 .resume-modal .modal-content .close {
   position: absolute;
-  right: 36px;
-  top: 35px;
-  font-size: 50px;
+  right: 20px;
+  top: 10px;
+  font-size: 40px;
   color: #d9534f;
-}
-.resume-modal .modal-content .close:hover {
+  z-index: 10000;
   cursor: pointer;
 }
+
 .resume-modal .modal-content img {
-  max-width: 550px;
-  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
-@media (max-width: 1130px) {
-  .resume-modal {
-    z-index: 11;
-  }
+
+.resume-modal .modal-content iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.resume-file-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 18px;
+}
+
+.resume-file-card a {
+  padding: 10px 20px;
+  background: #d9534f;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.resume-file-card a:hover {
+  opacity: 0.9;
 }
