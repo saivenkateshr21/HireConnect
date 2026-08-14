@@ -10,8 +10,8 @@ HireConnect is a full-stack job portal web application designed to connect recru
 
 ## 🌐 Live Application URLs
 
-- **Frontend App (Vercel)**: `https://hire-connect-chi.vercel.app/` *(Replace with your live Vercel URL)*
-- **Backend API (Render)**: `https://hireconnect-backend-vrql.onrender.com` *(Replace with your live Render URL)*
+- **Frontend App (Vercel)**: `https://hire-connect-chi.vercel.app/` 
+- **Backend API (Render)**: `https://hireconnect-backend-vrql.onrender.com` 
 
 ---
 
